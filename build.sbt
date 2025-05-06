@@ -4,7 +4,7 @@ ThisBuild / scalaVersion := "3.6.3"
 ThisBuild / semanticdbEnabled := true
 
 // Dependency versions
-val kropVersion = "0.8.0"
+val kropVersion = "0.9.0"
 val munitVersion = "0.7.29"
 val logbackVersion = "1.5.0"
 
@@ -43,7 +43,12 @@ lazy val shared = crossProject(JSPlatform, JVMPlatform)
     commonSettings,
     Compile / unmanagedSourceDirectories ++= Seq(
       baseDirectory.value.getParentFile / "src"
-    )
+    ),
+    libraryDependencies ++= Seq(
+      "io.circe" %% "circe-core",
+      "io.circe" %% "circe-generic",
+      "io.circe" %% "circe-parser"
+    ).map(_ % circeVersion)
   )
   .enablePlugins(KropLayout)
 
@@ -57,11 +62,6 @@ lazy val backend = project
     libraryDependencies ++= Seq(
       "ch.qos.logback" % "logback-classic" % logbackVersion % Runtime
     ),
-    libraryDependencies ++= Seq(
-      "io.circe" %% "circe-core",
-      "io.circe" %% "circe-generic",
-      "io.circe" %% "circe-parser"
-    ).map(_ % circeVersion),
     // This sets Krop into development mode, which gives useful tools for
     // developers. Krop runs in production mode if you don't set this.
     run / javaOptions += "-Dkrop.mode=development",
