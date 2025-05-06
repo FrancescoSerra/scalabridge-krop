@@ -1,9 +1,9 @@
 package scalabridge
 
 import krop.all.{_, given}
-import scalabridge.model.types._
+import scalabridge.model.types.*
 import scalabridge.routes.Routes
-import scalabridge.routes.Routes._
+import scalabridge.routes.Routes.*
 import scalabridge.views.html
 
 import java.time.ZonedDateTime
@@ -11,7 +11,7 @@ import scala.collection.mutable
 
 object Main {
   val name = "scalabridge"
-  val todos = mutable.Map[Int, ToDo]()
+  private val todos = mutable.Map[Int, ToDo]()
 
   val homeRoute =
     home.handle(() => html.base(name, html.home(name)).toString)
@@ -35,6 +35,13 @@ object Main {
   }
   val getTodos = getAllTodosRoute.handle(() => todos)
   val deleteTodo = deleteTodoRoute.handle(id => todos.remove(id))
+  val updateTodo = updateTodoRoute.handle((id,body) =>
+    todos.get(id).map(existing => todos.update(id, existing.copy(
+      title = body.title,
+      description = body.description,
+      author = body.author
+    ))
+  ))
 
   val assets =
     Routes.assets.passthrough
@@ -45,6 +52,7 @@ object Main {
       .orElse(postTodo)
       .orElse(getTodos)
       .orElse(deleteTodo)
+      .orElse(updateTodo)
       .orElse(assets)
       .orElse(Application.notFound)
 
