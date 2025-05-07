@@ -36,7 +36,7 @@ object Main {
   val getTodos = getAllTodosRoute.handle(() => todos)
   val deleteTodo = deleteTodoRoute.handle(id => todos.remove(id))
   val updateTodo = updateTodoRoute.handle((id,body) =>
-    todos.get(id).map(existing => todos.update(id, existing.copy(
+    todos.updateWith(id)(existing => existing.map(_.copy(
       title = body.title,
       description = body.description,
       author = body.author
