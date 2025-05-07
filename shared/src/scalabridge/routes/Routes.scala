@@ -2,7 +2,8 @@ package scalabridge.routes
 
 import cats.syntax.all.*
 import krop.all.*
-import scalabridge.model.types.ToDo
+import scalabridge.model.types.*
+import org.http4s.Status.*
 
 import scala.collection.mutable
 
@@ -40,5 +41,9 @@ object Routes {
   val updateTodoRoute = new Route(
     Request.patch(Path / "todos" / Param.int).withEntity(Entity.jsonOf[ToDo]),
     Response.ok(Entity.jsonOf[ToDo]).orNotFound
+  )
+  val updateOnlyIfSameAuthorRoute = new Route(
+    Request.patch(Path / "todos" / Param.string / Param.int).withEntity(Entity.jsonOf[ToDo]),
+    Response.ok(Entity.jsonOf[ToDo]).orElse(Response.status(BadRequest, Entity.text)).orNotFound
   )
 }

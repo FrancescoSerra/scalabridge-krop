@@ -1,5 +1,6 @@
 package scalabridge
 
+import cats.syntax.all.*
 import krop.all.{_, given}
 import scalabridge.model.types.*
 import scalabridge.routes.Routes
@@ -42,6 +43,17 @@ object Main {
       author = body.author
     ))
   ))
+  val updateTodoOnlySameAuthor = updateOnlyIfSameAuthorRoute.handle((author,id,body) =>
+    todos.get(id).flatMap(todo =>
+      if (todo.author.value == author)
+        todos.updateWith(id)(existing => existing.map(_.copy(
+          title = body.title,
+          description = body.description,
+          author = body.author
+        ))).map(_.asLeft[String])
+      else "Boo!! Not same author!!".asRight[ToDo].some
+    )
+  )
 
   val assets =
     Routes.assets.passthrough
@@ -53,6 +65,7 @@ object Main {
       .orElse(getTodos)
       .orElse(deleteTodo)
       .orElse(updateTodo)
+      .orElse(updateTodoOnlySameAuthor)
       .orElse(assets)
       .orElse(Application.notFound)
 
