@@ -39,6 +39,6 @@ object Routes {
   )
   val updateTodoRoute = new Route(
     Request.patch(Path / "todos" / Param.int).withEntity(Entity.jsonOf[ToDo]),
-    Response.ok(Entity.jsonOf[ToDo].map(_.some)).orNotFound
+    Response.ok(Entity.jsonOf[ToDo]).orNotFound
   )
 }
