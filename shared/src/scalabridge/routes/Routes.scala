@@ -46,4 +46,14 @@ object Routes {
     Request.patch(Path / "todos" / Param.string / Param.int).withEntity(Entity.jsonOf[ToDo]),
     Response.ok(Entity.jsonOf[ToDo]).orElse(Response.status(BadRequest, Entity.text)).orNotFound
   )
+
+  val getPersonForm = new Route(
+    Request.get(Path / "person"),
+    Response.ok(Entity.formOf[Person])
+  )
+
+  val createPersonForm = new Route(
+    Request.post(Path / "person").withEntity(Entity.formOf[Person]),
+    Response.ok(Entity.text)
+  )
 }

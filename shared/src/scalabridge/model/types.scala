@@ -40,5 +40,11 @@ object types:
   )
   object ToDo:
     given Codec[ToDo] = deriveCodec
+    
+    
+  final case class Person(
+      name: String,
+      age: Int
+  )
 
 end types

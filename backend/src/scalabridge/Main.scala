@@ -50,10 +50,12 @@ object Main {
           title = body.title,
           description = body.description,
           author = body.author
-        ))).map(_.asLeft[String])
-      else "Boo!! Not same author!!".asRight[ToDo].some
+        ))).map(_.asRight[String])
+      else "Boo!! Not same author!!".asLeft[ToDo].some
     )
   )
+  val getPersonForms = getPersonForm.handle(() => Person("Francesco", 45))
+  val createPersonForms = createPersonForm.handle(person => s"${person.name} ${person.age}")
 
   val assets =
     Routes.assets.passthrough
@@ -67,6 +69,8 @@ object Main {
       .orElse(updateTodo)
       .orElse(updateTodoOnlySameAuthor)
       .orElse(assets)
+      .orElse(getPersonForms)
+      .orElse(createPersonForms)
       .orElse(Application.notFound)
 
   @main def run(): Unit =
