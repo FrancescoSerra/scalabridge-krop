@@ -57,6 +57,9 @@ object Main {
   val getPersonForms = getPersonForm.handle(() => Person("Francesco", 45))
   val createPersonForms = createPersonForm.handle(person => s"${person.name} ${person.age}")
 
+  val answersHandler = getAnswersAll.handle(answers => answers.toList.mkString(","))
+  val wordsHandler = getWords.handle(words => words.toList.mkString(" "))
+
   val assets =
     Routes.assets.passthrough
 
@@ -71,6 +74,8 @@ object Main {
       .orElse(assets)
       .orElse(getPersonForms)
       .orElse(createPersonForms)
+      .orElse(answersHandler)
+      .orElse(wordsHandler)
       .orElse(Application.notFound)
 
   @main def run(): Unit =

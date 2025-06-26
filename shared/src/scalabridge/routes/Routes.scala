@@ -2,6 +2,7 @@ package scalabridge.routes
 
 import cats.syntax.all.*
 import krop.all.*
+import krop.route.StringCodec
 import scalabridge.model.types.*
 import org.http4s.Status.*
 
@@ -54,6 +55,16 @@ object Routes {
 
   val createPersonForm = new Route(
     Request.post(Path / "person").withEntity(Entity.formOf[Person]),
+    Response.ok(Entity.text)
+  )
+  
+  val getAnswersAll = new Route(
+    Request.get(Path / "answers" / Param.all(Param.One[Answer](Answer.stringCodec))),
+    Response.ok(Entity.text)
+  )
+  
+  val getWords = new Route(
+    Request.get(Path / "words" / Param.all(Param.One[String](StringCodec.string))),
     Response.ok(Entity.text)
   )
 }
